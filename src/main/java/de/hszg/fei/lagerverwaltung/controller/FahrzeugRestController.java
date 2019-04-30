@@ -3,6 +3,9 @@ package de.hszg.fei.lagerverwaltung.controller;
 import java.util.List;
 import java.util.Optional;
 
+import de.hszg.fei.lagerverwaltung.entity.*;
+import de.hszg.fei.lagerverwaltung.repository.*;
+import de.hszg.fei.lagerverwaltung.view.FahrzeugView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,15 +14,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.hszg.fei.lagerverwaltung.entity.Fahrzeug;
-import de.hszg.fei.lagerverwaltung.repository.FahrzeugRepository;
-
 @RestController
 @RequestMapping("/fahrzeug")
 public class FahrzeugRestController {
-	@Autowired
-	private FahrzeugRepository fahrzeugRepository;
-	
+	private final FahrzeugRepository fahrzeugRepository;
+	private final RadRepository radRepository;
+	private final KarosserieRepository karosserieRepository;
+	private final InnenausstattungRepository innenausstattungRepository;
+	private final FahrwerkRepository fahrwerkRepository;
+
+	public FahrzeugRestController(FahrzeugRepository fahrzeugRepository, RadRepository radRepository, KarosserieRepository karosserieRepository, InnenausstattungRepository innenausstattungRepository, FahrwerkRepository fahrwerkRepository) {
+		this.fahrzeugRepository = fahrzeugRepository;
+		this.radRepository = radRepository;
+		this.karosserieRepository = karosserieRepository;
+		this.innenausstattungRepository = innenausstattungRepository;
+		this.fahrwerkRepository = fahrwerkRepository;
+	}
+
 	@RequestMapping(value = "/all", method=RequestMethod.GET)
 	public ResponseEntity<List<Fahrzeug>> getAllFahrzeuge() {
 		return ResponseEntity.ok(fahrzeugRepository.findAll());
@@ -37,10 +48,21 @@ public class FahrzeugRestController {
 	}
 	
 	@RequestMapping(value = "", method=RequestMethod.POST)
-	public ResponseEntity<String> createFahrzeug(@RequestBody Fahrzeug fahrzeug) {
-		fahrzeugRepository.save(fahrzeug);
-		
-		return ResponseEntity.status(201).build();
+	public ResponseEntity<String> createFahrzeug(@RequestBody FahrzeugView fahrzeugView) {
+		Optional<Rad> rad = radRepository.findById(fahrzeugView.getRadId());
+		Optional<Fahrwerk> fahrwerk = fahrwerkRepository.findById(fahrzeugView.getFahrwerkId());
+		Optional<Karosserie> karosserie = karosserieRepository.findById(fahrzeugView.getKarosserieId());
+		Optional<Innenausstattung> innenausstattung = innenausstattungRepository.findById(fahrzeugView.getInnenausstattungId());
+
+		if (rad.isPresent() && fahrwerk.isPresent() && karosserie.isPresent() && innenausstattung.isPresent()) {
+			Fahrzeug fahrzeug = new Fahrzeug(null, karosserie.get(), fahrwerk.get(), innenausstattung.get(), rad.get(), fahrzeugView.getAnzahlRaeder(), fahrzeugView.getMenge(), fahrzeugView.getProduktionsDatum());
+
+			fahrzeugRepository.save(fahrzeug);
+
+			return ResponseEntity.status(201).build();
+		} else {
+			return ResponseEntity.status(404).build();
+		}
 	}
 	
 	@RequestMapping(value = "/rad/{name}", method=RequestMethod.GET)
