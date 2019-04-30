@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface LagerKarosserieRepository extends JpaRepository<LagerKarosserie, Long> {
     List<LagerKarosserie> findAllByEintreffenBefore(Long before);
+    List<LagerKarosserie> findAllByEintreffenBeforeAndAndId(Long before, Long id);
 }

@@ -6,10 +6,7 @@ import de.hszg.fei.lagerverwaltung.view.LagerAvailabilityView;
 import de.hszg.fei.lagerverwaltung.view.LagerPostView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -76,6 +73,15 @@ public class LagerController {
         return ResponseEntity.ok(lagerAvailabilityView);
     }
 
+    @RequestMapping(value = "/karosserie/avail/{id}", method = RequestMethod.GET)
+    public ResponseEntity<LagerAvailabilityView> getAvailableKarosserien(@PathVariable Long id) {
+        LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
+        List<LagerKarosserie> lagerKarosseries = this.lagerKarosserieRepository.findAllByEintreffenBeforeAndAndId(localDateTime.toEpochSecond(ZoneOffset.UTC), id);
+
+        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(localDateTime.toEpochSecond(ZoneOffset.UTC), lagerKarosseries.size());
+
+        return ResponseEntity.ok(lagerAvailabilityView);
+    }
 
     @RequestMapping(value = "/rad", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerRad(@RequestBody LagerPostView lagerPostView) {
