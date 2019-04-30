@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface LagerInnenausstattungRepository extends JpaRepository<LagerInnenausstattung, Long> {
     List<LagerInnenausstattung> findAllByEintreffenBefore(Long before);
+    List<LagerInnenausstattung> findAllByEintreffenBeforeAndId(Long before, Long id);
 }

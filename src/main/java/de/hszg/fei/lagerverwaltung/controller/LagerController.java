@@ -118,6 +118,15 @@ public class LagerController {
         return ResponseEntity.ok(lagerAvailabilityView);
     }
 
+    @RequestMapping(value = "/rad/avail/{id}", method = RequestMethod.GET)
+    public ResponseEntity<LagerAvailabilityView> getAvailableRaeder(@PathVariable Long id) {
+        LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
+        List<LagerRad> lagerRads = this.lagerRadRepository.findAllByEintreffenBeforeAndId(localDateTime.toEpochSecond(ZoneOffset.UTC), id);
+
+        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(localDateTime.toEpochSecond(ZoneOffset.UTC), lagerRads.size());
+
+        return ResponseEntity.ok(lagerAvailabilityView);
+    }
 
     @RequestMapping(value = "/fahrwerk", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerFahrwerk(@RequestBody LagerPostView lagerPostView) {
@@ -154,6 +163,16 @@ public class LagerController {
         return ResponseEntity.ok(lagerAvailabilityView);
     }
 
+    @RequestMapping(value = "/fahrwerk/avail/{id}", method = RequestMethod.GET)
+    public ResponseEntity<LagerAvailabilityView> getAvailableFahrwerke(@PathVariable Long id) {
+        LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
+        List<LagerFahrwerk> lagerFahrwerke = this.lagerFahrwerkRepository.findAllByEintreffenBeforeAndId(localDateTime.toEpochSecond(ZoneOffset.UTC), id);
+
+        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(localDateTime.toEpochSecond(ZoneOffset.UTC), lagerFahrwerke.size());
+
+        return ResponseEntity.ok(lagerAvailabilityView);
+    }
+
     @RequestMapping(value = "/innenausstattung", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerInnenausstatung(@RequestBody LagerPostView lagerPostView) {
         Optional<Innenausstattung> innenausstattungOptional = this.innenausstattungRepository.findById(lagerPostView.getId());
@@ -183,6 +202,16 @@ public class LagerController {
     public ResponseEntity<LagerAvailabilityView> getAvailableInnenausstattungen() {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerInnenausstattung> lagerInnenausstattungen = this.lagerInnenausstattungRepository.findAllByEintreffenBefore(localDateTime.toEpochSecond(ZoneOffset.UTC));
+
+        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(localDateTime.toEpochSecond(ZoneOffset.UTC), lagerInnenausstattungen.size());
+
+        return ResponseEntity.ok(lagerAvailabilityView);
+    }
+
+    @RequestMapping(value = "/innenausstattung/avail/{id}", method = RequestMethod.GET)
+    public ResponseEntity<LagerAvailabilityView> getAvailableInnenausstattungen(@PathVariable Long id) {
+        LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
+        List<LagerInnenausstattung> lagerInnenausstattungen = this.lagerInnenausstattungRepository.findAllByEintreffenBeforeAndId(localDateTime.toEpochSecond(ZoneOffset.UTC), id);
 
         LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(localDateTime.toEpochSecond(ZoneOffset.UTC), lagerInnenausstattungen.size());
 

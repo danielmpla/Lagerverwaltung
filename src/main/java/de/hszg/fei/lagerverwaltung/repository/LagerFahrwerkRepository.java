@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface LagerFahrwerkRepository extends JpaRepository<LagerFahrwerk, Long> {
     List<LagerFahrwerk> findAllByEintreffenBefore(Long before);
+    List<LagerFahrwerk> findAllByEintreffenBeforeAndId(Long before, Long id);
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface LagerRadRepository extends JpaRepository<LagerRad, Long> {
     List<LagerRad> findAllByEintreffenBefore(Long before);
+    List<LagerRad> findAllByEintreffenBeforeAndId(Long before, Long id);
 }
