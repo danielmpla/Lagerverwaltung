@@ -1,18 +1,14 @@
 package de.hszg.fei.lagerverwaltung.controller;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import de.hszg.fei.lagerverwaltung.entity.Rad;
 import de.hszg.fei.lagerverwaltung.repository.RadRepository;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rad")
@@ -80,8 +76,12 @@ public class RadRestController {
 		if (id == null || !radRepository.findById(id).isPresent()) {
 			return ResponseEntity.status(404).build();
 		}
-		
-		radRepository.deleteById(id);
+
+		try {
+			radRepository.deleteById(id);
+		} catch (ConstraintViolationException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
 		
 		return ResponseEntity.status(204).build();
 	}

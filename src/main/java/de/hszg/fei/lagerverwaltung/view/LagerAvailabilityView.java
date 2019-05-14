@@ -1,15 +1,25 @@
 package de.hszg.fei.lagerverwaltung.view;
 
 public class LagerAvailabilityView {
+    private Long teileId;
     private Long date;
     private int menge;
 
     public LagerAvailabilityView() {
     }
 
-    public LagerAvailabilityView(Long date, int menge) {
+    public LagerAvailabilityView(Long teileId, Long date, int menge) {
+        this.teileId = teileId;
         this.date = date;
         this.menge = menge;
+    }
+
+    public Long getTeileId() {
+        return teileId;
+    }
+
+    public void setTeileId(Long teileId) {
+        this.teileId = teileId;
     }
 
     public Long getDate() {
