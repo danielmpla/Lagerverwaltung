@@ -1,6 +1,8 @@
 package de.hszg.fei.lagerverwaltung.view;
 
 public class FahrzeugView {
+    private String name;
+
     private Long karosserieId;
     private Long fahrwerkId;
     private Long innenausstattungId;
@@ -14,7 +16,8 @@ public class FahrzeugView {
     public FahrzeugView() {
     }
 
-    public FahrzeugView(Long karosserieId, Long fahrwerkId, Long innenausstattungId, Long radId, int anzahlRaeder, int menge, Long produktionsDatum) {
+    public FahrzeugView(String name, Long karosserieId, Long fahrwerkId, Long innenausstattungId, Long radId, int anzahlRaeder, int menge, Long produktionsDatum) {
+        this.name = name;
         this.karosserieId = karosserieId;
         this.fahrwerkId = fahrwerkId;
         this.innenausstattungId = innenausstattungId;
@@ -22,6 +25,14 @@ public class FahrzeugView {
         this.anzahlRaeder = anzahlRaeder;
         this.menge = menge;
         this.produktionsDatum = produktionsDatum;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getKarosserieId() {

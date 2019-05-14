@@ -12,7 +12,9 @@ import javax.persistence.ManyToOne;
 public class Fahrzeug {
 	@Id @GeneratedValue
 	private Long id;
-	
+
+    private String name;
+
 	@ManyToOne
 	private Karosserie karosserie;
 	@ManyToOne
@@ -30,8 +32,9 @@ public class Fahrzeug {
 	public Fahrzeug() {
 		
 	}
-	
-	public Fahrzeug(Long id, Karosserie karosserie, Fahrwerk fahrwerk, Innenausstattung innenausstattung, Rad rad, int anzahlRaeder, int menge, long produktionstermin) {
+
+    public Fahrzeug(Long id, String name, Karosserie karosserie, Fahrwerk fahrwerk, Innenausstattung innenausstattung, Rad rad, int anzahlRaeder, int menge, long produktionstermin) {
+        this.name = name;
 		this.id = id;
 		this.karosserie = karosserie;
 		this.fahrwerk = fahrwerk;
@@ -42,7 +45,8 @@ public class Fahrzeug {
 		this.produktionstermin = produktionstermin;
 	}
 
-	public Fahrzeug(Karosserie karosserie, Fahrwerk fahrwerk, Innenausstattung innenausstattung, Rad rad, int anzahlRaeder, int menge, long produktionstermin) {
+    public Fahrzeug(String name, Karosserie karosserie, Fahrwerk fahrwerk, Innenausstattung innenausstattung, Rad rad, int anzahlRaeder, int menge, long produktionstermin) {
+        this.name = name;
 		this.karosserie = karosserie;
 		this.fahrwerk = fahrwerk;
 		this.innenausstattung = innenausstattung;
@@ -59,6 +63,14 @@ public class Fahrzeug {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
 	public Karosserie getKarosserie() {
 		return karosserie;
@@ -98,7 +110,7 @@ public class Fahrzeug {
 
 	public void setAnzahlRaeder(int anzahlRaeder) throws Exception {
 		if (anzahlRaeder < 2) {
-			throw new Exception("Zu wenige R�der");
+            throw new Exception("Zu wenige Räder");
 		}
 		this.anzahlRaeder = anzahlRaeder;
 	}
