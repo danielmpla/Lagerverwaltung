@@ -2,7 +2,6 @@ package de.hszg.fei.lagerverwaltung.controller;
 
 import de.hszg.fei.lagerverwaltung.entity.Rad;
 import de.hszg.fei.lagerverwaltung.repository.RadRepository;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,7 +78,7 @@ public class RadRestController {
 
 		try {
 			radRepository.deleteById(id);
-		} catch (ConstraintViolationException e) {
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 		

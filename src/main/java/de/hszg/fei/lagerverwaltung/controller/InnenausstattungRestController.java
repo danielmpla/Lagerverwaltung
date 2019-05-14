@@ -2,7 +2,6 @@ package de.hszg.fei.lagerverwaltung.controller;
 
 import de.hszg.fei.lagerverwaltung.entity.Innenausstattung;
 import de.hszg.fei.lagerverwaltung.repository.InnenausstattungRepository;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,7 +79,7 @@ public class InnenausstattungRestController {
 
         try {
             innenausstattungRepository.deleteById(id);
-        } catch (ConstraintViolationException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
