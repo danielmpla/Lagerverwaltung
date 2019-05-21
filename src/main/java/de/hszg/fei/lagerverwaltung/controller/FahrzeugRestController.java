@@ -1,18 +1,13 @@
 package de.hszg.fei.lagerverwaltung.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import de.hszg.fei.lagerverwaltung.entity.*;
 import de.hszg.fei.lagerverwaltung.repository.*;
 import de.hszg.fei.lagerverwaltung.view.FahrzeugView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/fahrzeug")
@@ -55,7 +50,7 @@ public class FahrzeugRestController {
 		Optional<Innenausstattung> innenausstattung = innenausstattungRepository.findById(fahrzeugView.getInnenausstattungId());
 
 		if (rad.isPresent() && fahrwerk.isPresent() && karosserie.isPresent() && innenausstattung.isPresent()) {
-			Fahrzeug fahrzeug = new Fahrzeug(null, karosserie.get(), fahrwerk.get(), innenausstattung.get(), rad.get(), fahrzeugView.getAnzahlRaeder(), fahrzeugView.getMenge(), fahrzeugView.getProduktionsDatum());
+            Fahrzeug fahrzeug = new Fahrzeug(fahrzeugView.getName(), karosserie.get(), fahrwerk.get(), innenausstattung.get(), rad.get(), fahrzeugView.getAnzahlRaeder(), fahrzeugView.getMenge(), fahrzeugView.getProduktionsDatum());
 
 			fahrzeugRepository.save(fahrzeug);
 
