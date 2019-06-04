@@ -1,25 +1,27 @@
 package de.hszg.fei.lagerverwaltung.view;
 
+import de.hszg.fei.lagerverwaltung.entity.Teil;
+
 public class LagerAvailabilityView {
-    private Long teileId;
+    private Teil teil;
     private Long date;
     private int menge;
 
     public LagerAvailabilityView() {
     }
 
-    public LagerAvailabilityView(Long teileId, Long date, int menge) {
-        this.teileId = teileId;
+    public LagerAvailabilityView(Teil teil, Long date, int menge) {
+        this.teil = teil;
         this.date = date;
         this.menge = menge;
     }
 
-    public Long getTeileId() {
-        return teileId;
+    public Teil getTeil() {
+        return teil;
     }
 
-    public void setTeileId(Long teileId) {
-        this.teileId = teileId;
+    public void setTeil(Teil teil) {
+        this.teil = teil;
     }
 
     public Long getDate() {

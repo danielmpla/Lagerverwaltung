@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController()
 @RequestMapping("/lager")
@@ -62,7 +63,7 @@ public class LagerController {
         return ResponseEntity.ok(this.lagerKarosserieRepository.findAll());
     }
 
-    @RequestMapping(value = "/karosserie/avail", method = RequestMethod.GET)
+/*    @RequestMapping(value = "/karosserie/avail", method = RequestMethod.GET)
     public ResponseEntity<List<LagerAvailabilityView>> getAvailableKarosserien() {
         List<LagerAvailabilityView> lagerAvailabilityViews = new ArrayList<>();
 
@@ -89,7 +90,7 @@ public class LagerController {
         LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), lagerKarosseries.size());
 
         return ResponseEntity.ok(lagerAvailabilityView);
-    }
+    }*/
 
     @RequestMapping(value = "/rad", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerRad(@RequestBody LagerPostView lagerPostView) {
@@ -116,7 +117,7 @@ public class LagerController {
         return ResponseEntity.ok(this.lagerRadRepository.findAll());
     }
 
-    @RequestMapping(value = "/rad/avail", method = RequestMethod.GET)
+/*    @RequestMapping(value = "/rad/avail", method = RequestMethod.GET)
     public ResponseEntity<List<LagerAvailabilityView>> getAvailableRaeder() {
         List<LagerAvailabilityView> lagerAvailabilityViews = new ArrayList<>();
 
@@ -144,7 +145,7 @@ public class LagerController {
         LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), lagerRads.size());
 
         return ResponseEntity.ok(lagerAvailabilityView);
-    }
+    }*/
 
     @RequestMapping(value = "/fahrwerk", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerFahrwerk(@RequestBody LagerPostView lagerPostView) {
@@ -171,7 +172,7 @@ public class LagerController {
         return ResponseEntity.ok(this.lagerFahrwerkRepository.findAll());
     }
 
-    @RequestMapping(value = "/fahrwerk/avail", method = RequestMethod.GET)
+/*    @RequestMapping(value = "/fahrwerk/avail", method = RequestMethod.GET)
     public ResponseEntity<List<LagerAvailabilityView>> getAvailableFahrwerke() {
         List<LagerAvailabilityView> lagerAvailabilityViews = new ArrayList<>();
 
@@ -198,7 +199,7 @@ public class LagerController {
         LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), lagerFahrwerke.size());
 
         return ResponseEntity.ok(lagerAvailabilityView);
-    }
+    }*/
 
     @RequestMapping(value = "/innenausstattung", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerInnenausstatung(@RequestBody LagerPostView lagerPostView) {
@@ -233,11 +234,12 @@ public class LagerController {
         List<LagerInnenausstattung> lagerInnenausstattungen = this.lagerInnenausstattungRepository.findAllByEintreffenBefore(localDateTime.toEpochSecond(ZoneOffset.UTC));
 
         Set<Long> ids = new HashSet<>();
+        Set<Innenausstattung> innenausstattungen = lagerInnenausstattungen.stream().map(LagerInnenausstattung::getInnenausstattung).collect(Collectors.toSet());
         lagerInnenausstattungen.forEach(l -> ids.add(l.getInnenausstattung().getId()));
 
-        for (Long id : ids) {
-            int numberOfInnenausstattungen = (int) lagerInnenausstattungen.stream().filter(l -> l.getInnenausstattung().getId().equals(id)).count();
-            LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), numberOfInnenausstattungen);
+        for (Innenausstattung innenausstattung : innenausstattungen) {
+            int numberOfInnenausstattungen = (int) lagerInnenausstattungen.stream().filter(l -> l.getInnenausstattung().getId().equals(innenausstattung.getId())).count();
+            LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(innenausstattung, localDateTime.toEpochSecond(ZoneOffset.UTC), numberOfInnenausstattungen);
             lagerAvailabilityViews.add(lagerAvailabilityView);
         }
 
@@ -250,7 +252,7 @@ public class LagerController {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerInnenausstattung> lagerInnenausstattungen = this.lagerInnenausstattungRepository.findAllByEintreffenBeforeAndId(localDateTime.toEpochSecond(ZoneOffset.UTC), id);
 
-        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), lagerInnenausstattungen.size());
+        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(lagerInnenausstattungen.get(0).getInnenausstattung(), localDateTime.toEpochSecond(ZoneOffset.UTC), lagerInnenausstattungen.size());
 
         return ResponseEntity.ok(lagerAvailabilityView);
     }
