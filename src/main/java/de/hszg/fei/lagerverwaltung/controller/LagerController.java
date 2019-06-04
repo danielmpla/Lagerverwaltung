@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController()
@@ -63,19 +66,18 @@ public class LagerController {
         return ResponseEntity.ok(this.lagerKarosserieRepository.findAll());
     }
 
-/*    @RequestMapping(value = "/karosserie/avail", method = RequestMethod.GET)
+    @RequestMapping(value = "/karosserie/avail", method = RequestMethod.GET)
     public ResponseEntity<List<LagerAvailabilityView>> getAvailableKarosserien() {
         List<LagerAvailabilityView> lagerAvailabilityViews = new ArrayList<>();
 
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerKarosserie> lagerKarosseries = this.lagerKarosserieRepository.findAllByEintreffenBefore(localDateTime.toEpochSecond(ZoneOffset.UTC));
 
-        Set<Long> ids = new HashSet<>();
-        lagerKarosseries.forEach(l -> ids.add(l.getKarosserie().getId()));
+        Set<Karosserie> karosserien = lagerKarosseries.stream().map(LagerKarosserie::getKarosserie).collect(Collectors.toSet());
 
-        for (Long id : ids) {
-            int numberOfKaroserien = (int) lagerKarosseries.stream().filter(l -> l.getKarosserie().getId().equals(id)).count();
-            LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), numberOfKaroserien);
+        for (Karosserie karosserie : karosserien) {
+            int numberOfKaroserien = (int) lagerKarosseries.stream().filter(l -> l.getKarosserie().getId().equals(karosserie.getId())).count();
+            LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(karosserie, localDateTime.toEpochSecond(ZoneOffset.UTC), numberOfKaroserien);
             lagerAvailabilityViews.add(lagerAvailabilityView);
         }
 
@@ -87,10 +89,10 @@ public class LagerController {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerKarosserie> lagerKarosseries = this.lagerKarosserieRepository.findAllByEintreffenBeforeAndAndId(localDateTime.toEpochSecond(ZoneOffset.UTC), id);
 
-        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), lagerKarosseries.size());
+        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(lagerKarosseries.get(0).getKarosserie(), localDateTime.toEpochSecond(ZoneOffset.UTC), lagerKarosseries.size());
 
         return ResponseEntity.ok(lagerAvailabilityView);
-    }*/
+    }
 
     @RequestMapping(value = "/rad", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerRad(@RequestBody LagerPostView lagerPostView) {
@@ -117,20 +119,19 @@ public class LagerController {
         return ResponseEntity.ok(this.lagerRadRepository.findAll());
     }
 
-/*    @RequestMapping(value = "/rad/avail", method = RequestMethod.GET)
+    @RequestMapping(value = "/rad/avail", method = RequestMethod.GET)
     public ResponseEntity<List<LagerAvailabilityView>> getAvailableRaeder() {
         List<LagerAvailabilityView> lagerAvailabilityViews = new ArrayList<>();
 
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerRad> lagerRads = this.lagerRadRepository.findAllByEintreffenBefore(localDateTime.toEpochSecond(ZoneOffset.UTC));
 
-        Set<Long> ids = new HashSet<>();
-        lagerRads.forEach(l -> ids.add(l.getRad().getId()));
+        Set<Rad> raeder = lagerRads.stream().map(LagerRad::getRad).collect(Collectors.toSet());
 
-        for (Long id : ids) {
-            int numberOfRaeder = (int) lagerRads.stream().filter(l -> l.getRad().getId().equals(id)).count();
+        for (Rad rad : raeder) {
+            int numberOfRaeder = (int) lagerRads.stream().filter(l -> l.getRad().getId().equals(rad.getId())).count();
 
-            LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), numberOfRaeder);
+            LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(rad, localDateTime.toEpochSecond(ZoneOffset.UTC), numberOfRaeder);
             lagerAvailabilityViews.add(lagerAvailabilityView);
         }
 
@@ -142,10 +143,10 @@ public class LagerController {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerRad> lagerRads = this.lagerRadRepository.findAllByEintreffenBeforeAndId(localDateTime.toEpochSecond(ZoneOffset.UTC), id);
 
-        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), lagerRads.size());
+        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(lagerRads.get(0).getRad(), localDateTime.toEpochSecond(ZoneOffset.UTC), lagerRads.size());
 
         return ResponseEntity.ok(lagerAvailabilityView);
-    }*/
+    }
 
     @RequestMapping(value = "/fahrwerk", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerFahrwerk(@RequestBody LagerPostView lagerPostView) {
@@ -172,19 +173,18 @@ public class LagerController {
         return ResponseEntity.ok(this.lagerFahrwerkRepository.findAll());
     }
 
-/*    @RequestMapping(value = "/fahrwerk/avail", method = RequestMethod.GET)
+    @RequestMapping(value = "/fahrwerk/avail", method = RequestMethod.GET)
     public ResponseEntity<List<LagerAvailabilityView>> getAvailableFahrwerke() {
         List<LagerAvailabilityView> lagerAvailabilityViews = new ArrayList<>();
 
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerFahrwerk> lagerFahrwerke = this.lagerFahrwerkRepository.findAllByEintreffenBefore(localDateTime.toEpochSecond(ZoneOffset.UTC));
 
-        Set<Long> ids = new HashSet<>();
-        lagerFahrwerke.forEach(l -> ids.add(l.getFahrwerk().getId()));
+        Set<Fahrwerk> fahrwerke = lagerFahrwerke.stream().map(LagerFahrwerk::getFahrwerk).collect(Collectors.toSet());
 
-        for (Long id : ids) {
-            int numberOfFahrwerke = (int) lagerFahrwerke.stream().filter(l -> l.getFahrwerk().getId().equals(id)).count();
-            LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), numberOfFahrwerke);
+        for (Fahrwerk fahrwerk : fahrwerke) {
+            int numberOfFahrwerke = (int) lagerFahrwerke.stream().filter(l -> l.getFahrwerk().getId().equals(fahrwerk.getId())).count();
+            LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(fahrwerk, localDateTime.toEpochSecond(ZoneOffset.UTC), numberOfFahrwerke);
             lagerAvailabilityViews.add(lagerAvailabilityView);
         }
 
@@ -196,10 +196,10 @@ public class LagerController {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerFahrwerk> lagerFahrwerke = this.lagerFahrwerkRepository.findAllByEintreffenBeforeAndId(localDateTime.toEpochSecond(ZoneOffset.UTC), id);
 
-        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(id, localDateTime.toEpochSecond(ZoneOffset.UTC), lagerFahrwerke.size());
+        LagerAvailabilityView lagerAvailabilityView = new LagerAvailabilityView(lagerFahrwerke.get(0).getFahrwerk(), localDateTime.toEpochSecond(ZoneOffset.UTC), lagerFahrwerke.size());
 
         return ResponseEntity.ok(lagerAvailabilityView);
-    }*/
+    }
 
     @RequestMapping(value = "/innenausstattung", method = RequestMethod.POST)
     public ResponseEntity<String> storeLagerInnenausstatung(@RequestBody LagerPostView lagerPostView) {
@@ -233,9 +233,7 @@ public class LagerController {
         LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         List<LagerInnenausstattung> lagerInnenausstattungen = this.lagerInnenausstattungRepository.findAllByEintreffenBefore(localDateTime.toEpochSecond(ZoneOffset.UTC));
 
-        Set<Long> ids = new HashSet<>();
         Set<Innenausstattung> innenausstattungen = lagerInnenausstattungen.stream().map(LagerInnenausstattung::getInnenausstattung).collect(Collectors.toSet());
-        lagerInnenausstattungen.forEach(l -> ids.add(l.getInnenausstattung().getId()));
 
         for (Innenausstattung innenausstattung : innenausstattungen) {
             int numberOfInnenausstattungen = (int) lagerInnenausstattungen.stream().filter(l -> l.getInnenausstattung().getId().equals(innenausstattung.getId())).count();
